@@ -1,41 +1,41 @@
-from wonderwords import RandomWord
-import random
-
-def load_word_list(filename: str):
-    # Returns a list from a file with a series of words
-    words = []
-    with open(filename, "r", encoding = "UTF-8") as file:
-        for line in file:
-            words.append(line.strip())
-    return words
-
-def generate_word(letter: str):
-    # Returns a random word that begins with the letter passed in
-    pass
-
-def print_a_letter():
-    # Generates the first starting letter
-    first_letter: str = random.choice("abcdefghijklmnopqrstuvwxyz")
-    print(f"Type a word starting with the letter {first_letter}")  # Press Ctrl+F8 to toggle the breakpoint.
+import wordgame
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
     # Load list of animals to memory
-    animal_list = load_word_list("animals.txt")
+    try:
+        game = wordgame.WordGame("animals.txt")
+    except FileNotFoundError:
+        # Something went wrong with the file
+        print("Error: Could not load word database")
+    else:
+        while True:
+            user_input: str = input (f"Enter an animal that starts with the letter {game.curr_letter}: ")
 
-    # Create a word generator from the list
-    generator = RandomWord(animal = animal_list)
+            game.curr_player_word = user_input
+            if not game.valid_player_word():
+                print("You lose!")
+                print("Your chained words: ")
+                for word in game.used_player_words:
+                    print(word)
+                print (f"Your total score: {len(game.used_player_words)}")
+                break
+            else:
+                if not game.try_set_pc_word():
+                    print("The Ai couldn't come up with a word, you win!")
+                    print("Your chained words: ")
+                    for word in game.used_player_words:
+                        print(word)
+                    print(f"Your total score: {len(game.used_player_words)}")
+                    break
+                else:
+                    print(f"The AI's word is {game.curr_pc_word}")
 
-    # Pick a random first letter
-    print_a_letter()
 
-    # TODO: Get user input (we should pick if sentence case or lowercase)
-    # user_input: str = input ("Your word: ")
-
-    print(generator.word())
     #animal list generated from goodgoodgood.co
+
 
 
 
